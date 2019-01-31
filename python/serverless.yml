@@ -14,6 +14,36 @@ provider:
       Resource: [
         "*"
       ]
+    - Effect: Allow
+      Action:
+      - sqs:*
+      Resource: [
+        "*"
+      ]
+    - Effect: Allow
+      Action:
+        - sns:*
+      Resource: [
+          "*"
+      ]
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: [
+          "*"
+        ]
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: [
+        "*"
+      ]
+    - Effect: Allow
+      Action:
+        - lambda:*
+      Resource: [
+        "*"
+      ]
 
 custom:
   pythonRequirements:
@@ -26,3 +56,10 @@ functions:
   error-injection-example:
     name: error-injection-chaos-example-python
     handler: error_injection_example.app.handler
+    environment:
+      thundra_agent_lambda_trace_span_listener: FilteringSpanListener[listener=ErrorInjectorSpanListener,config.errorType=redis.ConnectionError,config.addInfoTags=true,filter.className=Redis]
+  latency-injection-example:
+    name: latency-injection-chaos-example-python
+    handler: latency_injection_example.app.handler
+    environment:
+      thundra_agent_lambda_trace_span_listener: FilteringSpanListener[listener=LatencyInjectorSpanListener,config.delay=2000,config.sigma=1000,config.addInfoTags=true,filter.className=AWS-Lambda,filter.tag.aws.lambda.name=upstream-lambda]
