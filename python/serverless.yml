@@ -23,6 +23,6 @@ plugins:
   - serverless-python-requirements
 
 functions:
-  user-get-chaos:
-    name: user-get-chaos-example-python
-    handler: user_get.app.handler
+  error-injection-example:
+    name: error-injection-chaos-example-python
+    handler: error_injection_example.app.handler
