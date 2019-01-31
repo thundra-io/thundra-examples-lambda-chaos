@@ -1,0 +1,28 @@
+service: thundra-examples-lambda-chaos
+
+provider:
+  name: aws
+  runtime: python3.6
+  region: eu-west-2
+  memorySize: 256
+  timeout: 20
+  profile: staging-thundra
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - logs:*
+      Resource: [
+        "*"
+      ]
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+
+plugins:
+  - serverless-python-requirements
+
+functions:
+  user-get-chaos:
+    name: user-get-chaos-example-python
+    handler: user_get.app.handler
