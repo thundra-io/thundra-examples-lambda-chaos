@@ -108,3 +108,9 @@ functions:
     environment:
       thundra_agent_lambda_trace_span_listener: FilteringSpanListener[listener=ErrorInjectorSpanListener,config.errorType=boto3.exceptions.Boto3Error,filter.tag.aws.dynamodb.table.name=players-chaos-example-python]
       thundra_agent_lambda_timeout_margin: 600
+  custom-span-listener-example:
+    name: custom-span-listener-chaos-example-python
+    handler: custom_span_listener_example.app.handler
+    environment:
+      thundra_agent_lambda_timeout_margin: 600
+      thundra_agent_lambda_log_console_disable: true
