@@ -1,11 +1,51 @@
 service: thundra-examples-lambda-chaos
 
+custom:
+  postFix: chaos-example-python
+  pythonRequirements:
+    dockerizePip: non-linux
+
+  
+resources:
+  Resources:
+    ItemTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: items-${self:custom.postFix}
+        AttributeDefinitions:
+          -
+            AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          -
+            AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: "5"
+          WriteCapacityUnits: "5"
+    PlayerTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: players-${self:custom.postFix}
+        AttributeDefinitions:
+          -
+            AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          -
+            AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: "5"
+          WriteCapacityUnits: "5"
+
+        
 provider:
   name: aws
   runtime: python3.6
   region: eu-west-2
-  memorySize: 256
-  timeout: 20
+  memorySize: 512
+  timeout: 5
   profile: staging-thundra
   iamRoleStatements:
     - Effect: Allow
@@ -45,9 +85,6 @@ provider:
         "*"
       ]
 
-custom:
-  pythonRequirements:
-    dockerizePip: non-linux
 
 plugins:
   - serverless-python-requirements
@@ -58,8 +95,16 @@ functions:
     handler: error_injection_example.app.handler
     environment:
       thundra_agent_lambda_trace_span_listener: FilteringSpanListener[listener=ErrorInjectorSpanListener,config.errorType=redis.ConnectionError,config.addInfoTags=true,filter.className=Redis]
+      thundra_agent_lambda_timeout_margin: 600
   latency-injection-example:
     name: latency-injection-chaos-example-python
     handler: latency_injection_example.app.handler
     environment:
       thundra_agent_lambda_trace_span_listener: FilteringSpanListener[listener=LatencyInjectorSpanListener,config.delay=2000,config.sigma=1000,config.addInfoTags=true,filter.className=AWS-Lambda,filter.tag.aws.lambda.name=upstream-lambda]
+      thundra_agent_lambda_timeout_margin: 600
+  dynamo-error-injection-example:
+    name: dynamo-error-injection-chaos-example-python
+    handler: dynamo_error_injection_example.app.handler
+    environment:
+      thundra_agent_lambda_trace_span_listener: FilteringSpanListener[listener=ErrorInjectorSpanListener,config.errorType=boto3.exceptions.Boto3Error,filter.tag.aws.dynamodb.table.name=players-chaos-example-python]
+      thundra_agent_lambda_timeout_margin: 600
