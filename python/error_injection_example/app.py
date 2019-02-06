@@ -14,7 +14,7 @@ logger.addHandler(ThundraLogHandler())
 redis_cnf = cnf['redis']
 redis_conn = redis.Redis(
     host=redis_cnf.get('host'),
-    port=redis_cnf.get('port'),
+    port=int(redis_cnf.get('port')),
     password=redis_cnf.get('password')
 )
 
