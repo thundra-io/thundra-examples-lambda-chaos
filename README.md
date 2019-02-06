@@ -17,7 +17,7 @@ In this example we are making two sequential write operation to the DynamoDB. We
 You don't have to use one of the already implemented span listeners. You can create your own span listeners! A span listener is basically a class that inherits from the `ThundraSpanListener` class which implements the methods `on_span_started(span)` and `on_span_finished(span)`. Then you can create a span listener object from your custom span listener class and register it using the `trace_support.register_span_listener(span_listener)` method. Once you register your span listener, Thundra calls your span listener's `on_span_started(span)` and `on_span_finished(span)` methods whenever a span is started or finished. This way you can interact with the spans during their lifecycle and you can perform custom operations on spans.
 
 # Running the examples
-Example code takes credential's from a config file. To run the examples on your own be sure to add a `config.json` file under the `python` directory. `config.json` file should be in the following format, just replace the each value according to your configuration:
+Example code takes credentials from a config file. To run the examples on your own be sure to add a `config.json` file under the `python` directory. `config.json` file should be in the following format, just replace the each value according to your configuration:
 ```json
 {
     "redis": {
